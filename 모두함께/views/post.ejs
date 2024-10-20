@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= post.title %> - <%= board %> 게시판</title>
+<style>
+/* General Styles */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  background-color: #f4f4f9;
+}
+
+header {
+  background-color: #007BFF;
+  padding: 10px;
+  text-align: center;
+}
+
+header nav a {
+  color: white;
+  margin: 0 10px;
+  text-decoration: none;
+  padding: 10px 20px;
+  background-color: #0056b3;
+  border-radius: 5px;
+}
+
+header nav a:hover {
+  background-color: #003d80;
+}
+
+main {
+  padding: 20px;
+}
+
+h1 {
+  text-align: center;
+  color: #333;
+}
+
+/* Post List Styles */
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  background-color: #fff;
+  margin: 10px 0;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+li h2 {
+  margin: 0 0 10px;
+}
+
+li p {
+  margin: 0 0 10px;
+}
+
+li small {
+  color: #666;
+}
+
+li a {
+  color: #007BFF;
+  text-decoration: none;
+}
+
+li a:hover {
+  text-decoration: underline;
+}
+
+/* Form Styles */
+form div {
+  margin-bottom: 10px;
+}
+
+form label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+form input[type="text"],
+form textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+form input[type="file"] {
+  padding: 5px;
+}
+
+form button {
+  padding: 10px 20px;
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+form button:hover {
+  background-color: #0056b3;
+}
+
+a {
+  display: inline-block;
+  margin-top: 20px;
+  color: #007BFF;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+</style>
+
+</head>
+<body>
+  <header>
+    <nav>
+      <a href="/">홈</a>
+      <a href="/board/notice">공지사항</a>
+      <a href="/board/free">자유게시판</a>
+      <a href="/board/question">질문게시판</a>
+      <a href="/rules">규칙</a>
+      <a href="/newboard">새 게시판 만들기</a>
+    </nav>
+  </header>
+  <main>
+    <h1><%= post.title %></h1>
+    <p><%= post.content %></p>
+    <% if (post.file) { %>
+      <p><a href="/<%= post.file %>">첨부파일 다운로드</a></p>
+    <% } %>
+    <small>작성일: <%= new Date(post.createdAt).toLocaleString() %></small>
+    <div>
+      <form action="/board/<%= board %>/post/<%= post.id %>/like" method="post">
+        <button type="submit">좋아요 (<%= post.likes %>)</button>
+      </form>
+      <form action="/board/<%= board %>/post/<%= post.id %>/dislike" method="post">
+        <button type="submit">나빠요 (<%= post.dislikes %>)</button>
+      </form>
+    </div>
+    <hr>
+    <h2>댓글</h2>
+    <ul>
+      <% post.comments.forEach(comment => { %>
+        <li>
+          <p><%= comment.content %></p>
+          <small>작성일: <%= new Date(comment.createdAt).toLocaleString() %></small>
+        </li>
+      <% }) %>
+    </ul>
+    <hr>
+    <form action="/board/<%= board %>/post/<%= post.id %>/comment" method="post">
+      <label for="content">댓글 작성</label>
+      <textarea id="content" name="content" required></textarea>
+      <button type="submit">댓글 달기</button>
+    </form>
+    <a href="/board/<%= board %>">게시판으로 돌아가기</a>
+  </main>
+</body>
+</html>

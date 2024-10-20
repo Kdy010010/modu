@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>새 글 작성</title>
+<style>
+/* General Styles */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  background-color: #f4f4f9;
+}
+
+header {
+  background-color: #007BFF;
+  padding: 10px;
+  text-align: center;
+}
+
+header nav a {
+  color: white;
+  margin: 0 10px;
+  text-decoration: none;
+  padding: 10px 20px;
+  background-color: #0056b3;
+  border-radius: 5px;
+}
+
+header nav a:hover {
+  background-color: #003d80;
+}
+
+main {
+  padding: 20px;
+}
+
+h1 {
+  text-align: center;
+  color: #333;
+}
+
+/* Post List Styles */
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  background-color: #fff;
+  margin: 10px 0;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+li h2 {
+  margin: 0 0 10px;
+}
+
+li p {
+  margin: 0 0 10px;
+}
+
+li small {
+  color: #666;
+}
+
+li a {
+  color: #007BFF;
+  text-decoration: none;
+}
+
+li a:hover {
+  text-decoration: underline;
+}
+
+/* Form Styles */
+form div {
+  margin-bottom: 10px;
+}
+
+form label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+form input[type="text"],
+form textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+form input[type="file"] {
+  padding: 5px;
+}
+
+form button {
+  padding: 10px 20px;
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+form button:hover {
+  background-color: #0056b3;
+}
+
+a {
+  display: inline-block;
+  margin-top: 20px;
+  color: #007BFF;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+</style>
+
+</head>
+<body>
+  <header>
+    <nav>
+      <a href="/">홈</a>
+      <a href="/board/notice">공지사항</a>
+      <a href="/board/free">자유뜰</a>
+      <a href="/board/question">질문뜰</a>
+    </nav>
+  </header>
+  <main>
+    <h1>새 글 작성</h1>
+    <form action="/board/<%= board %>/posts" method="post" enctype="multipart/form-data">
+      <div>
+        <label for="title">제목</label>
+        <input type="text" id="title" name="title" required>
+      </div>
+      <div>
+        <label for="content">내용</label>
+        <textarea id="content" name="content" required></textarea>
+      </div>
+      <div>
+<div>
+      <button type="submit">작성하기</button>
+    </form>
+    <a href="/board/<%= board %>">뒤로가기</a>
+  </main>
+</body>
+</html>

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= board %> 뜰</title>
+  <style>
+    /* General Styles */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      background-color: #f4f4f9;
+    }
+
+    header {
+      background-color: #007BFF;
+      padding: 10px;
+      text-align: center;
+    }
+
+    header nav a {
+      color: white;
+      margin: 0 10px;
+      text-decoration: none;
+      padding: 10px 20px;
+      background-color: #0056b3;
+      border-radius: 5px;
+    }
+
+    header nav a:hover {
+      background-color: #003d80;
+    }
+
+    main {
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+
+    /* Post List Styles */
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    li {
+      background-color: #fff;
+      margin: 10px 0;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+
+    li h2 {
+      margin: 0 0 10px;
+    }
+
+    li p {
+      margin: 0 0 10px;
+    }
+
+    li small {
+      color: #666;
+    }
+
+    li a {
+      color: #007BFF;
+      text-decoration: none;
+    }
+
+    li a:hover {
+      text-decoration: underline;
+    }
+
+    /* Form Styles */
+    form div {
+      margin-bottom: 10px;
+    }
+
+    form label {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    form input[type="text"],
+    form textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+
+    form input[type="file"] {
+      padding: 5px;
+    }
+
+    form button {
+      padding: 10px 20px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    form button:hover {
+      background-color: #0056b3;
+    }
+
+    a {
+      display: inline-block;
+      margin-top: 20px;
+      color: #007BFF;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .comment {
+      margin-top: 20px;
+    }
+
+    .comment ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    .comment li {
+      background-color: #f9f9f9;
+      margin: 10px 0;
+      padding: 10px;
+      border: 1px solid #eee;
+      border-radius: 5px;
+    }
+
+    .comment form {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav>
+      <a href="/">홈</a>
+      <a href="/board/notice">공지사항</a>
+      <a href="/board/free">자유뜰</a>
+      <a href="/board/question">질문뜰</a>
+    </nav>
+  </header>
+  <main>
+    <h1><%= board %> 뜰</h1>
+    <a href="/board/<%= board %>/new">새 글 작성</a>
+    <form action="/board/<%= board %>/search" method="get">
+      <input type="text" name="q" placeholder="검색어를 입력하세요" required>
+      <button type="submit">검색</button>
+    </form>
+    <ul>
+      <% if (Array.isArray(posts) && posts.length > 0) { %>
+        <% posts.forEach(post => { %>
+          <li>
+            <h2><%= post.title %></h2>
+            <div>
+              <%- post.content %>
+            </div>
+            <% if (post.file) { %>
+              <p><a href="<%= post.file %>">첨부파일 다운로드</a></p>
+            <% } %>
+            <small>작성일: <%= new Date(post.createdAt).toLocaleString() %></small>
+            <div>
+              <form action="/board/<%= board %>/post/<%= post.id %>/like" method="POST" style="display:inline;">
+                <button type="submit">좋아요 (<%= post.likes %>)</button>
+              </form>
+              <form action="/board/<%= board %>/post/<%= post.id %>/dislike" method="POST" style="display:inline;">
+                <button type="submit">싫어요 (<%= post.dislikes %>)</button>
+              </form>
+            </div>
+            <section class="comment">
+              <h3>댓글</h3>
+              <ul>
+                <% post.comments.forEach((comment, commentIndex) => { %>
+                  <li>
+                    <p><%= comment.content %></p>
+                    <small>작성일: <%= new Date(comment.createdAt).toLocaleString() %></small>
+                    <% if (comment.replies && comment.replies.length > 0) { %>
+                      <ul>
+                        <% comment.replies.forEach(reply => { %>
+                          <li>
+                            <p><%= reply.content %></p>
+                            <small>작성일: <%= new Date(reply.createdAt).toLocaleString() %></small>
+                          </li>
+                        <% }) %>
+                      </ul>
+                    <% } %>
+                    <form action="/board/<%= board %>/post/<%= post.id %>/comment" method="POST">
+                      <input type="hidden" name="replyToCommentIndex" value="<%= commentIndex %>">
+                      <div>
+                        <label for="reply<%= post.id %><%= commentIndex %>">답글:</label>
+                        <textarea id="reply<%= post.id %><%= commentIndex %>" name="content" required></textarea>
+                      </div>
+                      <button type="submit">답글 달기</button>
+                    </form>
+                  </li>
+                <% }) %>
+              </ul>
+              <form action="/board/<%= board %>/post/<%= post.id %>/comment" method="POST">
+                <div>
+                  <label for="content<%= post.id %>">댓글 작성:</label>
+                  <textarea id="content<%= post.id %>" name="content" required></textarea>
+                </div>
+                <button type="submit">댓글 달기</button>
+              </form>
+            </section>
+          </li>
+        <% }) %>
+      <% } else { %>
+        <li>게시물이 없습니다.</li>
+      <% } %>
+    </ul>
+  </main>
+</body>
+</html>
